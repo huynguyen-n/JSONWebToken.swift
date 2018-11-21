@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		006118BF21A5B67A00802D1A /* JWT-iOS-Aggregate */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 006118C221A5B67B00802D1A /* Build configuration list for PBXAggregateTarget "JWT-iOS-Aggregate" */;
+			buildPhases = (
+				006118C321A5B67F00802D1A /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "JWT-iOS-Aggregate";
+			productName = "JWT-iOS-Aggregate";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		273010FF1F33EABA00219C35 /* HMAC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273010FE1F33EABA00219C35 /* HMAC.swift */; };
 		273011001F33EABA00219C35 /* HMAC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 273010FE1F33EABA00219C35 /* HMAC.swift */; };
@@ -353,6 +367,10 @@
 				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = Cocode;
 				TargetAttributes = {
+					006118BF21A5B67A00802D1A = {
+						CreatedOnToolsVersion = 10.1;
+						ProvisioningStyle = Automatic;
+					};
 					279D639B1AD07FFF0024E2BC = {
 						CreatedOnToolsVersion = 6.2;
 					};
@@ -378,6 +396,7 @@
 				CD9B62251C7753EC005D4844 /* JWT-tvOS */,
 				CD9B62371C7753FB005D4844 /* JWT-watchOS */,
 				279D63A61AD07FFF0024E2BC /* JWTTests */,
+				006118BF21A5B67A00802D1A /* JWT-iOS-Aggregate */,
 			);
 		};
 /* End PBXProject section */
@@ -419,6 +438,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		006118C321A5B67F00802D1A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Step 1. Build Device and Simulator versions. This also include the full bitcode generation of framework\nxcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -target \"${PROJECT_NAME}-iOS\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild BITCODE_GENERATION_MODE=bitcode OTHER_CFLAGS=\"-fembed-bitcode\" -target \"${PROJECT_NAME}-iOS\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphonesimulator BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy Swift modules (from iphonesimulator build) to the copied framework directory\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule/.\" \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/Modules/${PROJECT_NAME}.swiftmodule\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework\" \"${PROJECT_DIR}\"\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		279D63971AD07FFF0024E2BC /* Sources */ = {
@@ -504,6 +543,22 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		006118C021A5B67B00802D1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		006118C121A5B67B00802D1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		279D63B01AD07FFF0024E2BC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -787,6 +842,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		006118C221A5B67B00802D1A /* Build configuration list for PBXAggregateTarget "JWT-iOS-Aggregate" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				006118C021A5B67B00802D1A /* Debug */,
+				006118C121A5B67B00802D1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		279D63961AD07FFF0024E2BC /* Build configuration list for PBXProject "JWT" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
